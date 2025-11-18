@@ -30,12 +30,13 @@ title: "STATS 810 (Fall 2025)"
 
 * [Homework 9. Parallel statistical computing](hw09.pdf).
 
+* [Homework 10. Statistical computing on greatlakes](hw10.pdf).
+
+    + [Introductory notes on command-line usage of greatlakes](gl/slides.pdf).
+
 <!--
 * [Homework 9. Internet repositories for collaboration and open-source research: git and GitHub](hw08.html).
 
-* [Homework 11. Statistical computing on greatlakes](hw11.pdf).
-
-    + [Introductory notes on command-line usage of greatlakes](gl/slides.pdf).
 
 * No homework for the final week. The last class will be a capstone discussion of a recent paper from my group. We will focus on how issues discussed during the semester apply to this work: collaboration, coauthorship, peer review and publication, evaluating correctness, ethical decision-making, reproducibility, statistical computing. The paper under discussion is at https://arxiv.org/abs/2407.03085, and you are welcome to study it, though I'll start the class with a presentation of the main ideas: [slides posted](class14slides.pdf).
 
