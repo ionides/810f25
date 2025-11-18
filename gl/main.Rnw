@@ -138,6 +138,8 @@ sbatch --test-only sample.sbat
 \code{my\_accounts} & show all billing accounts on which you can run jobs
 \end{tabular}
 
+All Stats PhD students should have access to the \code{stats\_dept1} and \code{stats\_dept2} accounts.
+
 \end{frame}
 
 \section{R modules on greatlakes}
