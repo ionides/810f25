@@ -1,0 +1,249 @@
+\input{header}
+
+\mode<beamer>{\usetheme{AnnArbor}}
+\mode<beamer>{\setbeamertemplate{footline}}
+\mode<beamer>{\setbeamertemplate{footline}[frame number]}
+\mode<beamer>{\setbeamertemplate{frametitle continuation}[from second][\insertcontinuationcountroman]}
+\mode<beamer>{\setbeamertemplate{navigation symbols}{}}
+
+\mode<handout>{\pgfpagesuselayout{2 on 1}[letterpaper,border shrink=5mm]}
+
+\title{STATS 810 class 12:\\Introduction to parallel statistical computing on greatlakes}
+\author{Edward L. Ionides}
+
+\setbeamertemplate{footline}[frame number]
+
+<<setup,include=FALSE,cache=FALSE,purl=FALSE,child="setup.Rnw">>=
+@
+
+\begin{document}
+
+\maketitle
+
+\mode<article>{\tableofcontents}
+
+\mode<presentation>{
+  \begin{frame}{Outline}
+    \tableofcontents
+  \end{frame}
+}
+
+\section{Logging in to greatlakes}
+
+\begin{frame}{Requirements}
+
+We follow the \link{https://documentation.its.umich.edu/node/5013}{greatlakes user guide for getting started with the command line}. As preliminaries, you need:
+\begin{itemize}
+  \item A Slurm account. You should already have a primary account, \code{stats\_dept1}, and a smaller backup account for if you exhaust your resourses, \code{stats\_dept2}. 
+   \item A greatlakes cluster login account. If you have not yet filled in the form at \url{https://its.umich.edu/advanced-research-computing/high-performance-computing/great-lakes/getting-started} then do so.
+   \item A umich internet address. Use the umich VPN if you are not on campus.
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}{Connecting to greatlakes with macOS, Linux or Windows}
+Use the umich VPN if you are not on campus.
+  \begin{enumerate}
+  \item Open a Terminal window and type
+<<f1,echo=T,eval=F>>=
+ssh uniqname@greatlakes.arc-ts.umich.edu
+@
+where \code{uniqname} is your uniqname.
+\item Login with your Kerberos level-1 password, and Duo two-factor authentication.
+  \end{enumerate}
+This creates a remote terminal shell on greatlakes. 
+
+\end{frame}
+
+\begin{frame}{Connecting to greatlakes with a browser}
+Use the umich VPN if you are not on campus.
+\begin{enumerate}
+\item Point your browser to \url{https://greatlakes.arc-ts.umich.edu}
+\item Choose the menu option: Clusters $\rightarrow$ Great Lakes Shell Access
+\end{enumerate}
+This creates a remote terminal shell on greatlakes within your browser.
+
+\end{frame}
+
+\section{Moving files on and off greatlakes}
+
+\begin{frame}[fragile]{Moving files on and off greatlakes: \code{scp}}
+
+On Mac or Linux, you can use \code{scp} which has similar syntax to \code{cp}.
+
+To copy \code{myfile} on your laptop to a subdirectory \code{mydir} of your home directory on greatlakes:
+<<f2,echo=T,eval=F>>=
+scp myfile uniqname@greatlakes-xfer.arc-ts.umich.edu:mydir
+@
+To copy an entire directory, use the \code{-r} flag for recursive copy:
+<<f3,echo=T,eval=F>>=
+scp -r mydir uniqname@greatlakes-xfer.arc-ts.umich.edu:
+@
+These commands can also be reversed to copy files from greatlakes to your machine. The following copies \code{mydir} back to the current working directory:
+<<f4,echo=T,eval=F>>=
+scp -r uniqname@greatlakes-xfer.arc-ts.umich.edu:mydir .
+@
+You will need to authenticate via Duo to complete the file transfer.
+On Mac or Windows, \link{https://filezilla-project.org}{FileZilla} provides a file system user interface.
+\end{frame}
+
+\section{Working with batch jobs}
+
+\begin{frame}{Cluster batch workflow}
+
+\begin{enumerate}
+\item You create a batch script and submit it as a job
+\item Your job is scheduled, and it enters the queue
+\item When its turn arrives, your job will execute the batch script
+\item Your script has access to all applications and data
+\item When your script completes, anything it sent to standard output
+and error are saved in files stored in your submission directory
+\item You can ask that email be sent to you when your jobs starts, ends,
+or fails
+\item You can check on the status of your job at any time,
+or delete it if it's not doing what you want
+\item A short time after your job completes, it disappears
+\end{enumerate}
+\end{frame}
+
+\begin{frame}[fragile]{Useful batch commands}
+
+Submit a job
+<<f5,echo=T,eval=F>>=
+sbatch sample.sbat
+@
+
+Query job status
+<<f6,echo=T,eval=F>>=
+squeue -j jobid
+squeue -u uniqname
+@
+Delete a job
+<<f7,echo=T,eval=F>>=
+scancel jobid
+@
+Check a job script and estimate its start time
+<<f8,echo=T,eval=F>>=
+sbatch --test-only sample.sbat
+@
+\end{frame}
+
+\begin{frame}{More Slurm commands to try}
+
+\begin{tabular}{ll}
+\code{sacct -u user} \hspace{5mm} & show recent job history
+\\
+\code{seff jobid} & show cpu utilization for jobid
+\\
+\code{my\_accounts} & show all billing accounts on which you can run jobs
+\end{tabular}
+
+\end{frame}
+
+\section{R modules on greatlakes}
+
+\begin{frame}[fragile]{R modules on greatlakes}
+
+Sotware on greatlakes is packaged in modules which must be loaded
+<<f9,echo=T,eval=F>>=
+module load R
+@
+Other versions of R are available:
+<<f10,echo=T,eval=F>>=
+module avail R
+@
+We see that R4.4.0 is currently the default. For simple multicore computing, the default R module is appropriate. Other versions of R have been built and tested in other parallel environments, for example the \texttt{Rmpi} module runs R with mpi.
+
+R packages can be installed using \code{install.packages} within R, run at a terminal on the login node. Your home directory files (and therefore these packages) are accessible on all nodes of the cluster.
+
+\end{frame}
+
+
+\section{A test for foreach} 
+
+\begin{frame}[fragile]{Set up test for foreach} 
+
+\begin{itemize}
+\item
+The \texttt{gl} subdirectory of the \texttt{810f25} git repository has a file \texttt{test.sbat} which submits a batch job running the parallel \texttt{foreach} test in \texttt{test.R}.
+\item You can transfer the files from your laptop via \texttt{scp}, or by copy-paste.
+Or simply clone the class git repository into your greatlakes account,
+<<f12,echo=T,eval=F>>=
+git clone https://github.com/ionides/810f25.git
+@
+\item Inspect the text file \texttt{test.sbat}, for example by
+<<f13,echo=T,eval=F>>=
+more test.sbat
+@
+\item One thing that needs changing is to set your email address for alerts about jobs beginning and ending. To make these edits on greatlakes, you need a text editor. Options include
+<<f14,echo=T,eval=F>>=
+vi test.sbat
+nano test.sbat
+@
+\item It is useful to have basic familiarity with these editors, and you can ask the internet for help.
+
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]{Comparing results}
+
+\begin{itemize}
+\item You are now ready to run a batch job
+<<f15,echo=T,eval=F>>=
+sbatch test.sbat
+@
+\item
+From inspecting the code in \texttt{test.R}, we see that the results are saved in \texttt{test.csv}
+\item
+Compare the run times with the results from running this code on your laptop, as done in homework 9.
+\item
+Also, try running the code in \texttt{test2.R} by
+<<f16,echo=T,eval=F>>=
+sbatch test2.sbat
+@
+What do you learn from comparing the outputs in \texttt{test2.csv} with \texttt{test.csv} on greatlakes and your laptop?
+
+\end{itemize}
+
+\end{frame}
+
+\section{Other ways to run R on greatlakes}
+
+\begin{frame}[fragile]{Other ways to run R on greatlakes}
+
+\begin{itemize}
+\item It is sometimes useful to start an interactive session on greatlakes, particularly for debugging. This is done from the terminal as follows: 
+<<f17,echo=T,eval=F>>=
+module load R
+srun --nodes=1 --account=stats_dept1 --ntasks-per-node=8 \
+  --pty /bin/bash
+@
+\item You can then run R in the terminal by typing
+<<f18,echo=T,eval=F>>=
+R
+@
+\item This R session will have access to the cores you have requested.
+\item Here, we require \texttt{nodes=1} unless we use \texttt{Rmpi} since \texttt{library(doParallel)} alone cannot work with cores across different machines.
+\item You can also run \link{https://greatlakes.arc-ts.umich.edu/pun/sys/dashboard/batch_connect/sys/arcts_rstudio/session_contexts/new}{web-based Rstudio}.
+However, your task here is to run batch jobs, which remain the basic tool for intensive statistical computing.
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{Acknowledgments}
+  \begin{itemize}
+  \item
+    This lesson is prepared for STATS 810, Fall 2025.
+  \item
+    It builds on previous versions of STATS 810 and notes by Charles Antonelli and John Thiels.
+  \item
+    Compiled on \today.
+
+  \end{itemize}
+
+\end{frame}
+
+
+\end{document}

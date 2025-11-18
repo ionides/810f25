@@ -9,17 +9,19 @@ Statistical computing on greatlakes
 
 \end{center}
 
-From homework 9, we understand the relevance of being able to implement embarrassingly parallel calculations. In the context of statistical computing in R, we are motivated to learn to use \texttt{foreach} on the greatlakes cluster. In this homework we carry out a simple example, but once you can run a simple parallel for loop on greatlakes you are prepared for most simulation experiments that arise in statistics PhD research. Work through the questions below and write brief answers to the following questions, by editing the tex file available at \url{https://github.com/ionides/810f25}, and submit the resulting pdf file via Canvas. 
+From homework 9, we understand the relevance of being able to implement embarrassingly parallel calculations. In the context of statistical computing in R, we are motivated to learn to use \texttt{foreach} on the greatlakes cluster. Despite the growing popularity of Python, R is currently the dominant language at the {\it Journal of Statistical Software}. Some recent packages come in both R and Python.
+
+In this homework we carry out a simple example, but once you can run a simple parallel for loop on greatlakes you are prepared for most simulation experiments that arise in statistics PhD research. Work through the questions below and write brief answers to the following questions, by editing the tex file available at \url{https://github.com/ionides/810f25}, and submit the resulting pdf file via Canvas. 
 
 \begin{enumerate}
 
-\item R and Python have a reputation of being convenient for data analysis but slow in some situations. Loops can be slow in R, though careful coding may avoid this, e.g.,\\
+\item R and Python have a reputation of being convenient for data analysis but slow in some situations. Loops can be slow in these interpreted languages, though careful coding may avoid this, e.g.,\\
 \url{https://adv-r.hadley.nz/control-flow.html#common-pitfalls}\\
-\url{https://thenewstack.io/speed-up-python-loops-proven-techniques-to-make-your-code-faster}\\
+\url{https://lectures.scientific-python.org/advanced/optimizing/}\\
 If run time starts limiting your research---i.e., whenever there is a numerical result you would like to see but you don't have the patience to wait for it to be computed---you have various options, including:
   \begin{enumerate}
   \item Use smaller examples.
-  \item Write the critical part of your code in C. In R, this can make use of the C functions underpinning the R language\\
+  \item Write the critical part of your code in C or C++. In R, this can make use of the C functions underpinning the R language\\
     (\url{https://cran.r-project.org/doc/manuals/R-exts.html#The-R-API}).
     \\
     Alternatively, the Rcpp package facilitates combining R with compiled C++ code.
