@@ -154,7 +154,7 @@ Other versions of R are available:
 <<f10,echo=T,eval=F>>=
 module avail R
 @
-We see that R4.4.0 is currently the default. For simple multicore computing, the default R module is appropriate. Other versions of R have been built and tested in other parallel environments, for example the \texttt{Rmpi} module runs R with mpi.
+We see that R4.4.3 is currently the default. For simple multicore computing, the default R module is appropriate. Other versions of R have been built and tested in other parallel environments, for example the \texttt{Rmpi} module runs R with mpi.
 
 R packages can be installed using \code{install.packages} within R, run at a terminal on the login node. Your home directory files (and therefore these packages) are accessible on all nodes of the cluster.
 
